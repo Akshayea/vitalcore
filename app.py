@@ -29,6 +29,30 @@ def init_db():
 
     c.execute("PRAGMA foreign_keys = ON;")
 
+    # Users table
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            age INTEGER,
+            gender TEXT,
+            weight REAL,
+            height REAL,
+            country TEXT,
+            pa INTEGER,
+            stress INTEGER,
+            water REAL,
+            sleep INTEGER,
+            family TEXT,
+            habits TEXT,
+            bmi REAL,
+            risk INTEGER,
+            diseases TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    # Diary table
     c.execute("""
         CREATE TABLE IF NOT EXISTS diary (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,9 +63,24 @@ def init_db():
         )
     """)
 
+    # Streaks
     c.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT
+        CREATE TABLE IF NOT EXISTS streaks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            day TEXT,
+            UNIQUE(user_id, day)
+        )
+    """)
+
+    # Tasks
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            day TEXT,
+            tasks_json TEXT,
+            UNIQUE(user_id, day)
         )
     """)
 
@@ -444,5 +483,6 @@ if __name__ == "__main__":
     print("🔥 App Starting...")
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
