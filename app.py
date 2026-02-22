@@ -24,31 +24,29 @@ def get_db():
     return conn
 
 def init_db():
-    conn = get_db()
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     c = conn.cursor()
 
-    # Users / health profiles
+    c.execute("PRAGMA foreign_keys = ON;")
+
     c.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id        INTEGER PRIMARY KEY AUTOINCREMENT,
-            name      TEXT NOT NULL,
-            age       INTEGER,
-            gender    TEXT,
-            weight    REAL,
-            height    REAL,
-            country   TEXT,
-            pa        INTEGER,
-            stress    INTEGER,
-            water     REAL,
-            sleep     INTEGER,
-            family    TEXT,
-            habits    TEXT,
-            bmi       REAL,
-            risk      INTEGER,
-            diseases  TEXT,
-            created_at TEXT DEFAULT (datetime('now'))
+        CREATE TABLE IF NOT EXISTS diary (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            text TEXT,
+            mood TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
 
     # Diary entries
     c.execute("""
@@ -446,4 +444,5 @@ if __name__ == "__main__":
     print("🔥 App Starting...")
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
