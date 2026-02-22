@@ -18,7 +18,7 @@ DB_PATH = os.path.join(BASE_DIR, "vitalcore.db")
 
 # ── Database ─────────────────────────────────────────────────
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -442,3 +442,4 @@ if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
