@@ -24,7 +24,7 @@ def get_db():
     return conn
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute("PRAGMA foreign_keys = ON;")
@@ -87,40 +87,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-    # Diary entries
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS diary (
-            id         INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id    INTEGER NOT NULL,
-            text       TEXT NOT NULL,
-            mood       TEXT,
-            created_at TEXT DEFAULT (datetime('now'))
-        )
-    """)
-
-    # Daily streaks
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS streaks (
-            id      INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            day     TEXT NOT NULL,
-            UNIQUE(user_id, day)
-        )
-    """)
-
-    # Daily tasks state
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS tasks (
-            id         INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id    INTEGER NOT NULL,
-            day        TEXT NOT NULL,
-            tasks_json TEXT NOT NULL,
-            UNIQUE(user_id, day)
-        )
-    """)
-
-    conn.commit()
-    conn.close()
+   
 
 # ── Health calculation helpers ────────────────────────────────
 def calc_disease(factors):
@@ -482,6 +449,7 @@ with app.app_context():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
