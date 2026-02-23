@@ -8,6 +8,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3, json, os
 from datetime import datetime, date, timedelta
+
 print("🔥 App Starting...")
 
 # ── App setup ────────────────────────────────────────────────
@@ -86,8 +87,8 @@ def init_db():
 
     conn.commit()
     conn.close()
-
    
+
 
 # ── Health calculation helpers ────────────────────────────────
 def calc_disease(factors):
@@ -439,17 +440,18 @@ def api_stats(user_id):
         "bmi": user["bmi"] if user else None,
         "risk": user["risk"] if user else None,
     })
-
+@app.route("/init-db")
+def init_db_route():
+    init_db()
+    return "Database initialized"
 # ════════════════════════════════════════════════════════════
 #  Boot
 # ════════════════════════════════════════════════════════════
-with app.app_context():
-    init_db()
-
 if __name__ == "__main__":
+    with app.app_context():
+        init_db()
+
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
-
 
 
